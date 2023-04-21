@@ -1,4 +1,4 @@
-# nvidia_grd_checker
+# nvidia_grd_updator
 Automate the tedious process of update the Nvidia Game Ready Driver(GRD) with few clicks </br>
 
 ## Supports
