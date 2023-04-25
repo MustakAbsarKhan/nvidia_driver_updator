@@ -13,6 +13,9 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from bs4 import BeautifulSoup
 import subprocess
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 #________________
 # wait for Enter key to be pressed
@@ -104,9 +107,6 @@ for key, value in product_series_dict.items():
         product_series = value
         print(f"\n=>Selected Product Series: {product_series}")
         break
-
-    else:
-        print(product_series_input, key)
 
 
 #________________
@@ -221,26 +221,77 @@ print(f"Operating System: {Operating_System}")
 print(f"Download Type: Production Branch/Studio")
 print(f"Language: {language}")
 
-# # create a new Chrome browser instance
-# driver = webdriver.Chrome()
+# create a new Chrome browser instance
+driver = webdriver.Chrome()
 
-# # navigate to the NVIDIA download page
-# driver.get("https://www.nvidia.com/download/index.aspx")
+# navigate to the NVIDIA download page
+driver.get("https://www.nvidia.com/download/index.aspx")
 
-# # find the product type dropdown element and select based on Input
+# find the product type dropdown element and select based on Input
 
-# product_series_typ_dropdown = Select(driver.find_element("id","selProductSeriesType"))
-# product_series_typ_dropdown.select_by_value(product_typ_input)
+product_typ_dropdown = Select(driver.find_element("id","selProductSeriesType"))
+product_typ_dropdown.select_by_value(str(product_typ_input))
 
-# # find the product series dropdown element and select based on Input
+# find the product series dropdown element and select based on Input
 
-# product_series_typ_dropdown = Select(driver.find_element("id","selProductSeries"))
-# product_series_typ_dropdown.select_by_value()
+product_series_dropdown = Select(driver.find_element("id","selProductSeries"))
+product_series_dropdown.select_by_value(product_series_input)
 
-# # # get the HTML source code of the page after the selection change
-# # html = driver.page_source
-# # print(html)
+#_________________________________
+# find the product name dropdown element and select based on Input
+product_dropdown = Select(driver.find_element('id','selProductFamily'))
+options = product_dropdown.options
+for option in options:
+    if(option.text == product_name):
+        product_dropdown.select_by_value(option.get_attribute("value"))
+        # print(option.get_attribute("value"), option.text)
 
-# # # close the browser window
-# # driver.quit()
-# # exit()
+
+# find the operating system dropdown element and select based on Input
+os_dropdown = Select(driver.find_element("id","selOperatingSystem"))
+os_dropdown.select_by_value(str(op_sys_input))
+
+# find the download type dropdown element and select based on Input
+
+dt_dropdown = Select(driver.find_element("id","ddlDownloadTypeCrdGrd"))
+dt_dropdown.select_by_value(str(download_typ))
+
+# find the language type dropdown element and select based on Input
+
+lang_dropdown = Select(driver.find_element("id","ddlLanguage"))
+lang_dropdown.select_by_value(str(lang_op_input))
+
+# find the search button element
+search_button = driver.find_element("xpath",'//a[btn_drvr_lnk_txt="Search"]')
+
+# click the search button
+search_button.click()
+
+# get the current URL after clicking the search button
+current_url = driver.current_url
+print(current_url)
+
+
+# # get the HTML source code of the page after the selection change
+# html = driver.page_source
+# print(html)
+
+# close the browser window
+driver.quit()
+# exit()
+
+
+#______________________
+#Soo Deep! Working on the second page!
+
+# get the current URL after clicking the search button
+current_url = current_url
+
+# fetch the HTML content of the page
+new_response = requests.get(current_url)
+new_html = new_response.content
+
+# parse the HTML content with BeautifulSoup
+new_soup = BeautifulSoup(new_html, 'html.parser')
+
+print(new_soup)
