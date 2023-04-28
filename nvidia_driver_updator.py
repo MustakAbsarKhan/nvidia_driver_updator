@@ -1,28 +1,36 @@
-"""
-1. Visit https://www.nvidia.com/download/index.aspx
-    - set dropdown
-        - Product Type based on Multiple Choice show based user Input (Geforce,NVIDIA RTX etc)
-        - Product Series based on Multiple Choice show based user Input
-        - Product based on Multiple Choice show based user Input
-        - Operating System Windows 10 64 bit Default
-        - Download Type Game Ready Driver (GRD) Defult
-        - Language English (US) Default
-"""
+import urllib.request
+import subprocess
 import requests
+import os
+import re
+from tqdm import tqdm  # Import tqdm library for progress bar
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from bs4 import BeautifulSoup
-import subprocess
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 
 #________________
 # wait for Enter key to be pressed
-input("Press Enter to Initiate The Program...")
+input("\n => Press Enter to Initiate The Program!! ==>> ")
 
-# execute the next code block
-print("Initiating...")
+
+# check if Chrome is installed
+print("\n => Checking Chrome Installation! <=\n")
+
+def check_chrome():
+    try:
+        output = subprocess.check_output(['google-chrome', '--version'])
+        print("\n Chrome is already installed. \n")
+    except:
+        print("\n => Chrome is not installed. Installing Chrome...")
+        try:
+            os.system("sudo apt-get update")
+            os.system("sudo apt-get install -y google-chrome-stable")
+            print("\n  => Chrome installed successfully. Restart this Program... \n")
+        except:
+            print("\n Sorry! An Error Occured. Please Install Chrome Manually & Run The Program Again! \n")
+        
+check_chrome()
 
 
 #Detects GPU model
@@ -34,8 +42,10 @@ def get_mdl():
     return line.strip()
 
 product_name_func = get_mdl()
-print(product_name_func)
+print("Current Device: " + product_name_func)
 
+# execute the next code block
+print("Initiating Current Driver Version Check...")
 
 soup_url = "https://www.nvidia.com/download/index.aspx"
 
@@ -65,7 +75,7 @@ for product_typ in product_typ_content:
             print(f" For {text}: Type => {value}")
     
 ## taking user input and validating
-product_typ_input = input("\n Type Desired Value and Press Enter =>> ")
+product_typ_input = input("\n Type Desired Value and Press Enter =>>  ")
 product_typ_input = int(product_typ_input)
 
 if(product_typ_input in product_typ_dict):
@@ -167,7 +177,7 @@ print("\nExecuting next code block...")
 
 download_typ = 1 #Production Branch/Studio
 
-print("\n=> Stable Type of the Driver is Selected")
+print("\n=> Game Ready Driver (GRD) is Selected (Default)")
 
 #________________
 # wait for Enter key to be pressed
@@ -221,9 +231,21 @@ print(f"Operating System: {Operating_System}")
 print(f"Download Type: Production Branch/Studio")
 print(f"Language: {language}")
 
-# create a new Chrome browser instance
-driver = webdriver.Chrome()
+#________________
+# wait for Enter key to be pressed
+input("\n => Press Enter to Check The Latest Official Version!! ==>> ")
 
+
+# check if Chrome is installed
+print("\n => Checking The Latest Official Version....\n")
+
+# create options object
+chrome_options = Options()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--disable-gpu')
+
+# create webdriver object
+driver = webdriver.Chrome(options=chrome_options)
 # navigate to the NVIDIA download page
 driver.get("https://www.nvidia.com/download/index.aspx")
 
@@ -244,7 +266,6 @@ options = product_dropdown.options
 for option in options:
     if(option.text == product_name):
         product_dropdown.select_by_value(option.get_attribute("value"))
-        # print(option.get_attribute("value"), option.text)
 
 
 # find the operating system dropdown element and select based on Input
@@ -271,11 +292,6 @@ search_button.click()
 current_url = driver.current_url
 print(current_url)
 
-
-# # get the HTML source code of the page after the selection change
-# html = driver.page_source
-# print(html)
-
 # close the browser window
 driver.quit()
 # exit()
@@ -294,4 +310,88 @@ new_html = new_response.content
 # parse the HTML content with BeautifulSoup
 new_soup = BeautifulSoup(new_html, 'html.parser')
 
-print(new_soup)
+# find the latest version file size
+parent = new_soup.find('div', {'id': 'rightContent'})
+table_tbody = parent.find('table').find('tbody')
+
+tr_version = table_tbody.find_all('tr')[0]
+td_version_data = tr_version.find('td', {'id': 'tdVersion'}).text.strip()
+
+match = re.search(r'\d+(\.\d+)?', td_version_data)
+
+if match:
+    latest_version = match.group(0)
+else:
+    print('\n => No version number found. Check Internet')
+
+tr_version_size = table_tbody.find_all('tr')[5]
+tr_version_size_content = tr_version_size.find_all('td')[1]
+latest_version_size = tr_version_size_content.get_text().strip()
+
+latest_version_data = " => Latest Version: " + latest_version + " & " + "Size: "+ latest_version_size
+
+print("\n" + latest_version_data)#print
+
+# checking the current installed Game Ready Driver Version
+output = subprocess.check_output(['nvidia-smi', '--query-gpu=driver_version', '--format=csv'])
+current_driver_version = output.decode().split('\n')[1]
+
+print(f"\n => Current NVIDIA GRD Version: {current_driver_version}")
+
+# evaluate which version is newer and download that when needed
+if current_driver_version < latest_version:
+    GRD_Version = latest_version
+else:
+    print(f"\n => NVIDIA GRD V-{latest_version} or Higher is installed in this device!")
+    print(f"\n => Closing The Program....")
+    print(f"\n => Share Your Feedback to ==>> mustak.absar.khan@gmail.com")
+    print(f" => © 2023, Mohammad Mustak Absar Khan")
+    
+    exit()
+
+# Set the download URL and file name
+url = f'https://us.download.nvidia.com/Windows/{GRD_Version}/{GRD_Version}-desktop-win10-win11-64bit-international-dch-whql.exe'
+filename = f'GRD{GRD_Version}.exe'
+
+# Download the file with progress bar
+try:
+    print(f"\n => Downloading {url}...")
+    with urllib.request.urlopen(url) as response, open(filename, 'wb') as out_file:
+        file_size = int(response.info().get('Content-Length', -1))
+        if file_size == -1:
+            print('Could not determine file size. Downloading without progress bar.')
+            out_file.write(response.read())
+        else:
+            # Use tqdm for progress bar
+            with tqdm(total=file_size, unit='B', unit_scale=True, unit_divisor=1024, desc=filename) as progress_bar:
+                while True:
+                    buffer = response.read(1024*1024)
+                    if not buffer:
+                        break
+                    out_file.write(buffer)
+                    progress_bar.update(len(buffer))
+
+    print(f"\n => Download complete. File saved as {filename}.")
+except urllib.error.HTTPError as e:
+    print(f"\n => Error downloading {url}: {e}. Please check the version number and try again.")
+    exit()
+except urllib.error.URLError as e:
+    print(f"\n => Error downloading {url}: {e}.")
+    exit()
+
+# Install the driver
+try:
+    print(f"\n => Installing {filename}...")
+    cmd = filename
+    driver_install_command = subprocess.call(cmd, shell=True)
+    print(f"\n => Installation complete.")
+except subprocess.CalledProcessError as e:
+    print(f"\n => Error installing {filename}: {e}.")
+    exit()
+
+# Delete the downloaded file
+try:
+    os.remove(filename)
+    print(f"\n => {filename} deleted.")
+except OSError as e:
+    print(f"\n => Error deleting {filename}: {e}")
