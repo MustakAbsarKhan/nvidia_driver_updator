@@ -1,10 +1,18 @@
 # nvidia_driver_updator
-Automate the tedious process of update the Nvidia Game Ready Driver(GRD) with few clicks!! </br>
+Automate the tedious Nvidia Game Ready Driver (GRD) update with a few clicks!! </br>
+<b>Please `Star` (⭐) the repository if you like the program &#9829; &#9829; </b>
 
 ## Supports
--> Windows 10/11 64Bit </br>
--> Default GRD Version: 531.68 </br>
--> Language: English </br>
+-> Product Type: Geforce and NVIDIA RTX/Quadro [Mail: <b>mustak.absar.khan@gmail.com</b> to add your desired type or have customized version]</br>
+-> Any Product Series and Product </br>
+-> Any Operating System (OS)</br>
+-> Game Ready Driver (GRD)</br>
+-> Any Language (Driver)</br>
+
+## Requires
+-> Google Chrome </br>
+-> NVIDIA Game Ready Driver (GRD) already Installed</br>
+
 ## Required Libraries
 1. selenium
 2. BeautifulSoup
@@ -16,7 +24,8 @@ Automate the tedious process of update the Nvidia Game Ready Driver(GRD) with fe
 8. re
 
 ## How to use it?
--> Run the grdScrapper.py </br>
+-> Run the nvidia_driver_updator.exe </br>
+-> Press Enter to Initiate the Installation and Proceed! </br>
 -> After initiation the program will check availability/install the Chrome Browser</br>
 -> Provide details of your current Graphics Card</br>
 -> The Program will check whether a new version of Driver is available while comparing with your current driver</br>

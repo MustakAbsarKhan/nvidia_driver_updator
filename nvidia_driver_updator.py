@@ -1,4 +1,5 @@
 import urllib.request
+import webbrowser
 import subprocess
 import requests
 import time
@@ -336,7 +337,16 @@ try:
     
         # execute the next code block
         print("\n Closing The Program....\n")
+        
+        time.sleep(2)  # pause for 3 seconds
+        
+        #redirecting to github url of the app developer
+        print("\n Please Support and Feel free to Contribute!! \n")
+        github_url = "https://github.com/MustakAbsarKhan"
+        webbrowser.open_new_tab(github_url)
+        
         time.sleep(3)  # pause for 3 seconds
+    
         exit()
 
     # Set the download URL and file name
@@ -392,6 +402,13 @@ try:
 
     # execute the next code block
     print("Closing The Program....")
+    time.sleep(2)  # pause for 3 seconds
+        
+    #redirecting to github url of the app developer
+    print("\n Please Support and Feel free to Contribute!! \n")
+    github_url = "https://github.com/MustakAbsarKhan"
+    webbrowser.open_new_tab(github_url)
+    
     time.sleep(3)  # pause for 3 seconds
     exit()
 
