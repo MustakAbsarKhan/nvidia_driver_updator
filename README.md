@@ -1,5 +1,5 @@
 # nvidia_driver_updator
-Automate the tedious Nvidia Game Ready Driver (GRD) update with a few clicks!! </br>
+✨ Automate the tedious Nvidia Game Ready Driver (GRD) update with a few clicks!! ✨ </br>
 <b>Please `Star` (⭐) the repository if you like the program &#9829; &#9829; </b>
 
 ## Supports
