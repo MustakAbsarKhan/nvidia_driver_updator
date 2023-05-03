@@ -19,11 +19,15 @@ input("\n => Press Enter to Initiate The Program!! ==>> ")
 try:
     #Detects GPU model
     def get_mdl():
-        line_as_bytes = subprocess.check_output("nvidia-smi -L", shell=True)
-        line = line_as_bytes.decode("ascii")
-        _, line = line.split(":", 1)
-        line, _ = line.split("(")
-        return line.strip()
+        try:
+            line_as_bytes = subprocess.check_output("nvidia-smi -L", shell=True)
+            line = line_as_bytes.decode("ascii")
+            _, line = line.split(":", 1)
+            line, _ = line.split("(")
+            return line.strip()
+        except subprocess.CalledProcessError:
+            print("\n No GPU detected!\n")
+            exit()
 
     product_name_func = get_mdl()
     print("\n Current Device: " + product_name_func)
@@ -201,7 +205,7 @@ try:
 
     #________________
     # wait for Enter key to be pressed
-    input("\nPress Enter to Check The Summary...")
+    input("\n Press Enter to Check The Summary...")
 
     # execute the next code block
     print("\n Printing The Summary...")
@@ -212,7 +216,7 @@ try:
     print(f"Product Series: {product_series}")
     print(f"Product Name: {product_name}")
     print(f"Operating System: {Operating_System}")
-    print(f"Download Type: Production Branch/Studio")
+    print(f"Download Type: Game Ready Driver (GRD)")
     print(f"Language: {language}")
 
     #________________
@@ -349,52 +353,67 @@ try:
     
         exit()
 
-    # Set the download URL and file name
+   # Set the download URL and file name
     url = f'https://us.download.nvidia.com/Windows/{GRD_Version}/{GRD_Version}-desktop-win10-win11-64bit-international-dch-whql.exe'
-    filename = f'GRD{GRD_Version}.exe'
+    filename = f'GRD_{GRD_Version}.exe'
 
     # Download the file with progress bar
-    try:
-        print(f"\n => Downloading {url}...")
-        with urllib.request.urlopen(url) as response, open(filename, 'wb') as out_file:
-            file_size = int(response.info().get('Content-Length', -1))
-            if file_size == -1:
-                print('Could not determine file size. Downloading without progress bar.')
-                out_file.write(response.read())
-            else:
-                # Use tqdm for progress bar
-                with tqdm(total=file_size, unit='B', unit_scale=True, unit_divisor=1024, desc=filename) as progress_bar:
-                    while True:
-                        buffer = response.read(1024*1024)
-                        if not buffer:
-                            break
-                        out_file.write(buffer)
-                        progress_bar.update(len(buffer))
+    while True:
+        try:
+            print(f"\n => Downloading {url}...")
+            with urllib.request.urlopen(url) as response, open(filename, 'wb') as out_file:
+                file_size = int(response.info().get('Content-Length', -1))
+                if file_size == -1:
+                    print('Could not determine file size. Downloading without progress bar.')
+                    out_file.write(response.read())
+                else:
+                    # Use tqdm for progress bar
+                    with tqdm(total=file_size, unit='B', unit_scale=True, unit_divisor=1024, desc=filename) as progress_bar:
+                        downloaded_size = 0
+                        while True:
+                            buffer = response.read(1024*1024)
+                            if not buffer:
+                                break
+                            out_file.write(buffer)
+                            downloaded_size += len(buffer)
+                            progress_bar.update(len(buffer))
 
-        print(f"\n => Download complete. File saved as {filename}.")
-    except urllib.error.HTTPError as e:
-        print(f"\n => Error downloading {url}: {e}. Please check the version number and try again.")
-        exit()
-    except urllib.error.URLError as e:
-        print(f"\n => Error downloading {url}: {e}.")
-        exit()
+                        if downloaded_size != file_size:
+                            print("Downloaded file size does not match expected file size. Retrying...")
+                            continue
+
+            print(f"\n => Download complete. File saved as {filename}.")
+            break
+        except (urllib.error.HTTPError, urllib.error.URLError) as e:
+            print(f"\n => Error downloading {url}: {e}. Retrying...")
+            continue
 
     # Install the driver
-    try:
-        print(f"\n => Installing {filename}...")
-        cmd = filename
-        driver_install_command = subprocess.call(cmd, shell=True)
-        print(f"\n => Installation complete.")
-    except subprocess.CalledProcessError as e:
-        print(f"\n => Error installing {filename}: {e}.")
+    install_confirm = input("\n Type Y/N to Install The Latest Driver =>> ")
+    if(install_confirm.upper() == "Y"):
+        try:
+            print(f"\n => Installing {filename}...")
+            cmd = filename
+            driver_install_command = subprocess.call(cmd, shell=True)
+            print(f"\n => Installation complete.")
+        except subprocess.CalledProcessError as e:
+            print(f"\n => Error installing {filename}: {e}.")
+            exit()
+    else:
+        print("\n Exiting The Program Without Installing The File \n")
         exit()
 
     # Delete the downloaded file
-    try:
-        os.remove(filename)
-        print(f"\n => {filename} deleted.")
-    except OSError as e:
-        print(f"\n => Error deleting {filename}: {e}")
+    del_confirm = input("\n Type Y/N to Delete The Installation File =>> ")
+    
+    if(del_confirm.upper() == "Y"):
+        try:
+            os.remove(filename)
+            print(f"\n => {filename} deleted.")
+        except OSError as e:
+            print(f"\n => Error deleting {filename}: {e}")
+    else:
+        print("The Installation File Is Stored In Your Directory")
 
     #________________
     # wait for Enter key to be pressed
