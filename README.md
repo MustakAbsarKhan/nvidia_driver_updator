@@ -1,4 +1,21 @@
-# nvidia_driver_updator
+# Nvidia_Driver_Updator
+<br>
+<p align="center">
+  <a href="https://github.com/MustakAbsarKhan/nvidia_driver_updator/issues">
+    <img src="https://img.shields.io/github/issues/MustakAbsarKhan/nvidia_driver_updator"/> 
+  </a>
+  <a href="https://github.com/MustakAbsarKhan/nvidia_driver_updator/network/members">
+    <img src="https://img.shields.io/github/forks/MustakAbsarKhan/nvidia_driver_updator"/> 
+  </a>  
+  <a href="https://github.com/MustakAbsarKhan/nvidia_driver_updator/stargazers">
+    <img src="https://img.shields.io/github/stars/MustakAbsarKhan/nvidia_driver_updator"/> 
+  </a>
+    <a href="https://github.com/MustakAbsarKhan/nvidia_driver_updator/LICENSE">
+    <img src="https://img.shields.io/github/license/MustakAbsarKhan/nvidia_driver_updator"/> 
+  </a>
+</p>
+<br>
+
 ✨ Automate the tedious Nvidia Game Ready Driver (GRD) update with a few clicks!! ✨ </br>
 <b>Please `Star` (⭐) the repository if you like the program &#9829; &#9829; </b>
 
