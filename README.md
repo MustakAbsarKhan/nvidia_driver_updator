@@ -15,9 +15,11 @@
   </a>
 </p>
 <br>
-
+<p align="center">
 ✨ Automate the tedious Nvidia Game Ready Driver (GRD) update with a few clicks!! ✨ </br>
 <b>Please `Star` (⭐) the repository if you like the program &#9829; &#9829; </b>
+</p>
+<br>
 
 ## Supports
 -> Product Type: Geforce and NVIDIA RTX/Quadro [Mail: <b>mustak.absar.khan@gmail.com</b> to add your desired type or have customized version]</br>
